@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation("net.dv8tion:JDA:5.0.0-alpha.17")
     testImplementation(kotlin("test"))
 }
 
