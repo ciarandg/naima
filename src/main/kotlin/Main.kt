@@ -3,7 +3,7 @@ import net.dv8tion.jda.api.JDABuilder
 
 val jda = JDABuilder
     .createDefault(botToken)
-    .addEventListeners(NaimaEventListner())
+    .addEventListeners(NaimaEventListener())
     .build()
 
 fun main(args: Array<String>) = Unit
