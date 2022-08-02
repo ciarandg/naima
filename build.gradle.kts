@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.6.20"
+    kotlin("plugin.serialization") version "1.6.20"
     application
 }
 
@@ -14,6 +15,7 @@ repositories {
 
 dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.17")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0-RC")
     testImplementation(kotlin("test"))
 }
 
