@@ -1,4 +1,8 @@
+@file:Suppress("PropertyName")
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+val ktor_version: String by project
 
 plugins {
     kotlin("jvm") version "1.6.20"
@@ -16,6 +20,8 @@ repositories {
 dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.17")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0-RC")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
     testImplementation(kotlin("test"))
 }
 
