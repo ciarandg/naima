@@ -15,19 +15,24 @@ class NaimaEventListener : ListenerAdapter() {
     }
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-        if (event.name == NaimaCommands.submitCommand.name) {
-            event.deferReply().queue()
-            val requester = event.user.name
-            val artist = event.getOption("artist")!!.asString
-            val album = event.getOption("album")!!.asString
-            val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist)   }
-            val coverEmbed = EmbedBuilder()
-                .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
-                .build()
-            event.hook
-                .sendMessage("$requester has requested `$album` by `$artist`")
-                .addEmbeds(coverEmbed)
-                .queue()
+        when (event.name) {
+            NaimaCommands.submitCommand.name -> handleSubmitCommand(event)
+            else -> throw IllegalStateException("User a command that shouldn't exist: /${event.name}")
         }
+    }
+
+    private fun handleSubmitCommand(event: SlashCommandInteractionEvent) {
+        event.deferReply().queue()
+        val requester = event.user.name
+        val artist = event.getOption("artist")!!.asString
+        val album = event.getOption("album")!!.asString
+        val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist)   }
+        val coverEmbed = EmbedBuilder()
+            .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
+            .build()
+        event.hook
+            .sendMessage("$requester has requested `$album` by `$artist`")
+            .addEmbeds(coverEmbed)
+            .queue()
     }
 }
