@@ -24,8 +24,8 @@ class NaimaEventListener : ListenerAdapter() {
     private fun handleSubmitCommand(event: SlashCommandInteractionEvent) {
         event.deferReply().queue()
         val requester = event.user.name
-        val artist = event.getOption("artist")!!.asString
-        val album = event.getOption("album")!!.asString
+        val artist = event.getOption("artist")!!.asString // TODO proper error handling
+        val album = event.getOption("album")!!.asString // TODO proper error handling
         val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist) }
         val coverEmbed = EmbedBuilder()
             .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
