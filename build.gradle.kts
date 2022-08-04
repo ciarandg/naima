@@ -7,6 +7,7 @@ val ktor_version: String by project
 plugins {
     kotlin("jvm") version "1.6.20"
     kotlin("plugin.serialization") version "1.6.20"
+    id("com.diffplug.spotless") version "6.9.0"
     application
 }
 
@@ -23,6 +24,12 @@ dependencies {
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     testImplementation(kotlin("test"))
+}
+
+spotless {
+    kotlin {
+        ktlint("0.46.1")
+    }
 }
 
 tasks.test {
