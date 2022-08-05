@@ -5,3 +5,10 @@ services:
     user: gradle
     command: naima
     env_file: .env
+  # See https://www.mongodb.com/compatibility/docker
+  mongodb:
+    image: mongo:5.0
+    env_file: .env
+    volumes:
+      # Make mongo data persist after docker container is destroyed
+      - ./db:/data/db
