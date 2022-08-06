@@ -1,5 +1,7 @@
 package event.handler
 
+import com.vdurmont.emoji.EmojiManager
+import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import java.lang.Integer.min
 
@@ -29,11 +31,19 @@ class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHa
 
     override fun handle() {
         event.deferReply().queue()
-        event.hook.sendMessage(formatSelection(pullSelection())).queue()
+        val selection = pullSelection()
+        val message = event.hook.sendMessage(formatSelection(selection)).complete()
+        val emojis = voteEmojis.take(selection.size)
+        emojis.forEach { message.addReaction(it).queue() }
     }
 
     companion object {
         private const val ALBUMS_PER_ROUND = 3
+
+        val voteEmojis = listOf(
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+        ).map { Emoji.fromUnicode(EmojiManager.getForAlias(it).unicode) }
+
         private val unsuggested = mutableSetOf(
             "The Clash - London Calling",
             "Kanye West - Yeezus",
