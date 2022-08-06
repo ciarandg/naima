@@ -16,10 +16,20 @@ class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHa
         return selection
     }
 
+    private fun formatSelection(selection: Set<String>) =
+        if (selection.isEmpty()) {
+            "No albums available for vote"
+        } else {
+            selection.mapIndexed { i, pick ->
+                "${i+1}. $pick"
+            }.reduce { acc, s ->
+                acc + "\n" + s
+            }
+        }
+
     override fun handle() {
         event.deferReply().queue()
-        val selection = pullSelection()
-        event.hook.sendMessage(selection.toString()).queue()
+        event.hook.sendMessage(formatSelection(pullSelection())).queue()
     }
 
     companion object {
