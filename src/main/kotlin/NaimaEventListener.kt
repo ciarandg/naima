@@ -1,3 +1,4 @@
+import event.handler.SubmitCommandEventHandler
 import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import net.dv8tion.jda.api.EmbedBuilder
@@ -18,23 +19,8 @@ class NaimaEventListener : ListenerAdapter() {
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
         when (event.name) {
-            NaimaCommands.submitCommand.name -> handleSubmitCommand(event)
+            NaimaCommands.submitCommand.name -> SubmitCommandEventHandler(event).handle()
             else -> throw IllegalStateException("User a command that shouldn't exist: /${event.name}")
         }
-    }
-
-    private fun handleSubmitCommand(event: SlashCommandInteractionEvent) {
-        event.deferReply().queue()
-        val requester = event.user.name
-        val artist = event.getOption("artist")!!.asString // TODO proper error handling
-        val album = event.getOption("album")!!.asString // TODO proper error handling
-        val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist) }
-        val coverEmbed = EmbedBuilder()
-            .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
-            .build()
-        event.hook
-            .sendMessage("$requester has requested `$album` by `$artist`")
-            .addEmbeds(coverEmbed)
-            .queue()
     }
 }
