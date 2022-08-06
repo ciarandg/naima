@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import system.data.Suggestion
 
 class SubmitCommandEventHandler(event: SlashCommandInteractionEvent, val database: Database) : EventHandler(event) {
     override fun handle() {
@@ -13,6 +14,11 @@ class SubmitCommandEventHandler(event: SlashCommandInteractionEvent, val databas
         val artist = event.getOption("artist")!!.asString // TODO proper error handling
         val album = event.getOption("album")!!.asString // TODO proper error handling
         val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist) }
+        val suggestion = Suggestion(
+            releaseGroup,
+            event.user,
+            event.timeCreated.toInstant()
+        )
         val coverEmbed = EmbedBuilder()
             .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
             .build()
@@ -20,6 +26,6 @@ class SubmitCommandEventHandler(event: SlashCommandInteractionEvent, val databas
             .sendMessage("$requester has requested `$album` by `$artist`")
             .addEmbeds(coverEmbed)
             .queue()
-        database.insert(releaseGroup)
+        database.insert(suggestion)
     }
 }
