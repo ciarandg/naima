@@ -21,4 +21,11 @@ class Database {
             match(Suggestion::hasBeenChosen eq false),
             sort(ascending(Suggestion::timesVotable))
         ).toList()
+
+    fun incrementTimesVotable(suggestions: Collection<Suggestion>) {
+        collection.updateMany(
+            Suggestion::releaseGroup `in` suggestions.map { it.releaseGroup },
+            inc(Suggestion::timesVotable, 1)
+        )
+    }
 }
