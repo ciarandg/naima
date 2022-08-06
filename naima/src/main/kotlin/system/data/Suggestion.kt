@@ -7,8 +7,9 @@ import java.time.LocalDateTime
 
 data class Suggestion(
     val releaseGroup: ReleaseGroup,
-    val suggester: User,
+    val suggesterUserId: String,
     val suggestedTimestamp: Instant,
     val timesVotable: Int = 0,
-    val timesVoted: Int = 0
+    val timesVoted: Int = 0,
+    val hasBeenChosen: Boolean = false
 )
