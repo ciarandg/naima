@@ -1,6 +1,7 @@
 package event
 
 import command.NaimaCommands
+import event.handler.CloseVoteCommandEventHandler
 import event.handler.OpenVoteCommandEventHandler
 import event.handler.SubmitCommandEventHandler
 import jda
@@ -23,6 +24,7 @@ class NaimaEventListener : ListenerAdapter() {
         when (event.name) {
             NaimaCommands.submitCommand.name -> SubmitCommandEventHandler(event).handle()
             NaimaCommands.openVoteCommand.name -> OpenVoteCommandEventHandler(event).handle()
+            NaimaCommands.closeVoteCommand.name -> CloseVoteCommandEventHandler(event).handle()
             else -> throw IllegalStateException("User a command that shouldn't exist: /${event.name}")
         }
     }
