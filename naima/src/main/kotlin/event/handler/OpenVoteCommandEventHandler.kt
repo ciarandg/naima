@@ -12,7 +12,7 @@ class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHa
             "No albums available for vote"
         } else {
             selection.mapIndexed { i, pick ->
-                "${i + 1}. $pick"
+                "${i + 1}. ${pick.releaseGroup.prettyName}"
             }.reduce { acc, s ->
                 acc + "\n" + s
             }

@@ -7,6 +7,6 @@ class CloseVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventH
     override fun handle() {
         event.deferReply().queue()
         val winner = SystemState.closeVotingRound()
-        event.hook.sendMessage("Winner: $winner").queue()
+        event.hook.sendMessage("Winner: ${winner.releaseGroup.prettyName}").queue()
     }
 }

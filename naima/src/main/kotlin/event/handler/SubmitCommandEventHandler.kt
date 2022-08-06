@@ -23,7 +23,7 @@ class SubmitCommandEventHandler(event: SlashCommandInteractionEvent) : EventHand
             .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
             .build()
         event.hook
-            .sendMessage("$requester has requested `$album` by `$artist`")
+            .sendMessage("$requester has requested ${releaseGroup.prettyName}")
             .addEmbeds(coverEmbed)
             .queue()
         database.insert(suggestion)

@@ -10,6 +10,11 @@ data class ReleaseGroup(
     @SerialName("first-release-date") val releaseDate: String,
     @SerialName("artist-credit") val artistCredit: List<ArtistCredit>
 ) {
+    val artistName
+        get() = artistCredit[0].name
+    val prettyName
+        get() = "$artistName - $title"
+
     @kotlinx.serialization.Serializable
     data class ArtistCredit(
         val name: String
