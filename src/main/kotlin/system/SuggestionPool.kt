@@ -1,3 +1,5 @@
+package system
+
 import musicbrainz.data.ReleaseGroup
 
 class SuggestionPool {

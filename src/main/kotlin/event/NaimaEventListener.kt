@@ -1,5 +1,9 @@
+package event
+
+import command.NaimaCommands
 import event.handler.OpenVoteCommandEventHandler
 import event.handler.SubmitCommandEventHandler
+import jda
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter

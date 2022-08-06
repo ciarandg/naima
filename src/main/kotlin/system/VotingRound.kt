@@ -1,3 +1,5 @@
+package system
+
 class VotingRound(suggestionPool: SuggestionPool) {
     val choices = suggestionPool.poll(ALBUMS_PER_ROUND)
 

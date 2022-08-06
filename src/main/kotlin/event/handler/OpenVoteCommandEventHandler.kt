@@ -1,10 +1,10 @@
 package event.handler
 
-import SuggestionPool
-import VotingRound
 import com.vdurmont.emoji.EmojiManager
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import system.SuggestionPool
+import system.VotingRound
 
 class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
     private fun formatSelection(selection: Set<String>) =
