@@ -1,7 +1,7 @@
 version: "3"
 services:
   naima:
-    build: ./.
+    build: ./naima
     user: gradle
     command: naima
     env_file: .env
