@@ -1,11 +1,12 @@
 package event.handler
 
+import Database
 import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
-class SubmitCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
+class SubmitCommandEventHandler(event: SlashCommandInteractionEvent, val database: Database) : EventHandler(event) {
     override fun handle() {
         event.deferReply().queue()
         val requester = event.user.name
@@ -19,5 +20,6 @@ class SubmitCommandEventHandler(event: SlashCommandInteractionEvent) : EventHand
             .sendMessage("$requester has requested `$album` by `$artist`")
             .addEmbeds(coverEmbed)
             .queue()
+        database.insert(releaseGroup)
     }
 }

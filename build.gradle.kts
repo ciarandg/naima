@@ -24,12 +24,13 @@ dependencies {
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("com.vdurmont:emoji-java:5.1.1")
+    implementation("org.litote.kmongo:kmongo:4.6.1")
     testImplementation(kotlin("test"))
 }
 
 spotless {
     kotlin {
-        ktlint("0.46.1")
+        //ktlint("0.46.1")
     }
 }
 
