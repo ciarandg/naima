@@ -9,7 +9,9 @@ class NaimaEventListener : ListenerAdapter() {
     override fun onReady(event: ReadyEvent) {
         println("Discord API is ready!")
         jda.updateCommands().addCommands(
-            NaimaCommands.submitCommand
+            NaimaCommands.submitCommand,
+            NaimaCommands.openVotingRoundCommand,
+            NaimaCommands.closeVotingRoundCommand
         ).complete()
         println("Updated commands!")
     }
