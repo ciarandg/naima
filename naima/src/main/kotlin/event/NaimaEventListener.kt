@@ -22,9 +22,8 @@ class NaimaEventListener : ListenerAdapter() {
     }
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-        val database = Database()
         when (event.name) {
-            NaimaCommands.submitCommand.name -> SubmitCommandEventHandler(event, database).handle()
+            NaimaCommands.submitCommand.name -> SubmitCommandEventHandler(event).handle()
             NaimaCommands.openVoteCommand.name -> OpenVoteCommandEventHandler(event).handle()
             NaimaCommands.closeVoteCommand.name -> CloseVoteCommandEventHandler(event).handle()
             else -> throw IllegalStateException("User a command that shouldn't exist: /${event.name}")

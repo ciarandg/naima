@@ -1,13 +1,13 @@
 package event.handler
 
-import Database
+import database
 import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.data.Suggestion
 
-class SubmitCommandEventHandler(event: SlashCommandInteractionEvent, val database: Database) : EventHandler(event) {
+class SubmitCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
     override fun handle() {
         event.deferReply().queue()
         val requester = event.user.name
@@ -16,7 +16,7 @@ class SubmitCommandEventHandler(event: SlashCommandInteractionEvent, val databas
         val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist) }
         val suggestion = Suggestion(
             releaseGroup,
-            event.user,
+            event.user.id,
             event.timeCreated.toInstant()
         )
         val coverEmbed = EmbedBuilder()

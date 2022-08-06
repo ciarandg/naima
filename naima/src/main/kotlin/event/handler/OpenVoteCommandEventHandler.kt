@@ -4,9 +4,10 @@ import com.vdurmont.emoji.EmojiManager
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.SystemState
+import system.data.Suggestion
 
 class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
-    private fun formatSelection(selection: Set<String>) =
+    private fun formatSelection(selection: Set<Suggestion>) =
         if (selection.isEmpty()) {
             "No albums available for vote"
         } else {
