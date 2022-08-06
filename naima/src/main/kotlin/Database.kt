@@ -6,7 +6,7 @@ import musicbrainz.data.ReleaseGroup
 import org.litote.kmongo.*
 
 class Database {
-    val client = KMongo.createClient()
+    val client = KMongo.createClient(Environment.mongoConnString)
     val database = client.getDatabase("suggestions")
     val collection = database.getCollection<ReleaseGroup>()
 
