@@ -21,13 +21,13 @@ object SystemState {
         val channel = votingMessage?.channel
         votingMessage = channel?.retrieveMessageById(votingMessage?.id!!)?.complete()
 
-        val reactions = SystemState.votingMessage?.reactions
+        val reactions = votingMessage?.reactions
         println(reactions)
         // TODO handle reactions being null
         val voteCounts = reactions!!
             .map { reaction -> Pair(reaction.emoji, reaction.count) }
             .map { (emoji, count) -> Pair(Emojis.emojiToIndex(emoji), count) }
-            .filter { (emojiIndex, _) -> emojiIndex >= 0 &&  emojiIndex < currentVotingRound!!.choices.size }
+            .filter { (emojiIndex, _) -> emojiIndex >= 0 &&  emojiIndex < round.choices.size }
         println(voteCounts)
         val winnerIndex: Int = voteCounts.maxByOrNull { it.second }?.first!!
         val winner = round.choices[winnerIndex]
