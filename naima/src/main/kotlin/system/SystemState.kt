@@ -1,41 +1,37 @@
 package system
 
-import net.dv8tion.jda.api.entities.Message
 import system.data.Suggestion
 import Emojis
+import net.dv8tion.jda.api.interactions.InteractionHook
 
 object SystemState {
     private var currentVotingRound: VotingRound? = null
-    var votingMessage: Message? = null
 
-    fun openVotingRound(): VotingRound = currentVotingRound?.let {
+    fun openVotingRound(eventHook: InteractionHook): VotingRound = currentVotingRound?.let {
         throw IllegalStateException("Can't open a voting round when one is already open")
     } ?: run {
-        val newRound = VotingRound()
+        val newRound = VotingRound(eventHook)
         currentVotingRound = newRound
         return newRound
     }
 
     fun closeVotingRound(): Suggestion = currentVotingRound?.let { round ->
-        // Update message from history
-        val channel = votingMessage?.channel
-        votingMessage = channel?.retrieveMessageById(votingMessage?.id!!)?.complete()
-
-        val reactions = votingMessage?.reactions
-        println(reactions)
-        // TODO handle reactions being null
-        val voteCounts = reactions!!
-            .map { reaction -> Pair(reaction.emoji, reaction.count) }
-            .map { (emoji, count) -> Pair(Emojis.emojiToIndex(emoji), count) }
-            .filter { (emojiIndex, _) -> emojiIndex >= 0 &&  emojiIndex < round.choices.size }
-        println(voteCounts)
-        val winnerIndex: Int = voteCounts.maxByOrNull { it.second }?.first!!
+        val reactions = round.fetchVotingMessage().reactions
+        val voteCounts = reactions
+            .map { VoteTallyEntry(Emojis.emojiToIndex(it.emoji), it.count) }
+            .filter { it.emojiIndex >= 0 && it.emojiIndex < round.choices.size }
+        val winnerIndex = run {
+            val byVoteCount = voteCounts.sortedByDescending { it.voteCount }
+            val potentialWinners = byVoteCount.filter { it.voteCount == byVoteCount.first().voteCount }
+            potentialWinners.random().emojiIndex
+        }
         val winner = round.choices[winnerIndex]
-        println(winner)
 
         // TODO update timesVoted in database
 
         currentVotingRound = null
         return winner
     } ?: throw IllegalStateException("Can't close a voting round when one isn't open")
+
+    private data class VoteTallyEntry(val emojiIndex: Int, val voteCount: Int)
 }
