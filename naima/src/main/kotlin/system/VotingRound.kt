@@ -1,7 +1,6 @@
 package system
 
 import database
-import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion

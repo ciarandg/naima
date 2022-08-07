@@ -5,7 +5,6 @@ import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import musicbrainz.data.ReleaseGroup
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.data.Suggestion
 

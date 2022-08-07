@@ -1,9 +1,9 @@
 package system
 
-import system.data.Suggestion
 import Emojis
 import database
 import net.dv8tion.jda.api.interactions.InteractionHook
+import system.data.Suggestion
 import system.exception.VotingRoundAlreadyOpenException
 import system.exception.VotingRoundNotYetOpenException
 

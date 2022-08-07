@@ -1,10 +1,7 @@
 package event.handler
 
-import com.vdurmont.emoji.EmojiManager
-import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.SystemState
-import system.data.Suggestion
 import system.exception.VotingRoundAlreadyOpenException
 
 class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
