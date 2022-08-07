@@ -9,9 +9,9 @@ import org.litote.kmongo.*
 import system.data.Suggestion
 
 class Database {
-    val client = KMongo.createClient(Environment.mongoConnString)
-    val database = client.getDatabase("suggestions")
-    val collection: MongoCollection<Suggestion> = database.getCollection()
+    private val client = KMongo.createClient(Environment.mongoConnString)
+    private val database = client.getDatabase("suggestions")
+    private val collection: MongoCollection<Suggestion> = database.getCollection()
 
     fun insert(suggestion: Suggestion) {
         collection.insertOne(suggestion)
