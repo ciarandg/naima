@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.data.Suggestion
 
-class SubmitCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
+class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
     override fun handle() {
         event.deferReply().queue()
         val requester = event.user.name
