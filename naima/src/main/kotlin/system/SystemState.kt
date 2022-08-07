@@ -2,6 +2,7 @@ package system
 
 import system.data.Suggestion
 import Emojis
+import database
 import net.dv8tion.jda.api.interactions.InteractionHook
 
 object SystemState {
@@ -18,9 +19,7 @@ object SystemState {
     fun closeVotingRound(): Suggestion = currentVotingRound?.let { round ->
         val tally = getVoteTally(round)
         val winner = round.choices[tally.getWinner().emojiIndex]
-
-        // TODO update timesVoted in database
-
+        tally.forEach { database.incrementTimesVoted(round.choices[it.emojiIndex], it.voteCount) }
         currentVotingRound = null
         return winner
     } ?: throw IllegalStateException("Can't close a voting round when one isn't open")
@@ -28,7 +27,7 @@ object SystemState {
     private fun getVoteTally(votingRound: VotingRound): List<VoteTallyItem> {
         val reactions = votingRound.fetchVotingMessage().reactions
         return reactions
-            .map { VoteTallyItem(Emojis.emojiToIndex(it.emoji), it.count) }
+            .map { VoteTallyItem(Emojis.emojiToIndex(it.emoji), it.count - 1) }
             .filter { it.emojiIndex >= 0 && it.emojiIndex < votingRound.choices.size }
     }
 

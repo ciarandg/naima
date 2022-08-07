@@ -28,4 +28,11 @@ class Database {
             inc(Suggestion::timesVotable, 1)
         )
     }
+
+    fun incrementTimesVoted(suggestion: Suggestion, inc: Int) {
+        collection.updateOne(
+            Suggestion::releaseGroup eq suggestion.releaseGroup,
+            inc(Suggestion::timesVoted, inc)
+        )
+    }
 }
