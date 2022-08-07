@@ -16,7 +16,7 @@ class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHan
                 else "already been suggested, but has not yet been chosen in a vote"
             event.hook.sendMessage(
                 "Suggestion failed: ${suggestion.releaseGroup.prettyName} has $ending"
-            )
+            ).queue()
         } ?: run {
             val requesterName = event.user.name
             val suggestion = Suggestion(
