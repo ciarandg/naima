@@ -5,11 +5,12 @@ import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
+import java.lang.Integer.min
 
 class VotingRound(eventHook: InteractionHook) {
     val choices: List<Suggestion> = run {
         val allSuggestions = database.getSuggestionsRanked()
-        allSuggestions.take(ALBUMS_PER_ROUND)
+        allSuggestions.take(min(ALBUMS_PER_ROUND, allSuggestions.size))
     }
     private val message: Message = eventHook.sendMessage(formatChoices()).complete()
 
