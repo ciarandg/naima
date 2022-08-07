@@ -4,12 +4,14 @@ import system.data.Suggestion
 import Emojis
 import database
 import net.dv8tion.jda.api.interactions.InteractionHook
+import system.exception.VotingRoundAlreadyOpenException
+import system.exception.VotingRoundNotYetOpenException
 
 object SystemState {
     private var currentVotingRound: VotingRound? = null
 
     fun openVotingRound(eventHook: InteractionHook): VotingRound = currentVotingRound?.let {
-        throw IllegalStateException("Can't open a voting round when one is already open")
+        throw VotingRoundAlreadyOpenException()
     } ?: run {
         val newRound = VotingRound(eventHook)
         currentVotingRound = newRound
@@ -22,7 +24,7 @@ object SystemState {
         tally.forEach { database.incrementTimesVoted(round.choices[it.emojiIndex], it.voteCount) }
         currentVotingRound = null
         return winner
-    } ?: throw IllegalStateException("Can't close a voting round when one isn't open")
+    } ?: throw VotingRoundNotYetOpenException()
 
     private fun getVoteTally(votingRound: VotingRound): List<VoteTallyItem> {
         val reactions = votingRound.fetchVotingMessage().reactions
