@@ -34,6 +34,7 @@ class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHan
 
     override fun handle() {
         event.deferReply().queue()
+        // TODO check if release group has already been suggested
         val artist = event.getOption("artist")!!.asString // TODO proper error handling
         val album = event.getOption("album")!!.asString // TODO proper error handling
         val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist) }

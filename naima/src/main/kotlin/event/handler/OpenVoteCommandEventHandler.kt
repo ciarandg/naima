@@ -2,6 +2,7 @@ package event.handler
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.SystemState
+import system.exception.NoAlbumsAvailableException
 import system.exception.VotingRoundAlreadyOpenException
 
 class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
@@ -14,6 +15,10 @@ class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHa
         } catch (e: VotingRoundAlreadyOpenException) {
             event.hook.sendMessage(
                 "You need to close the currently open voting round with `/close` before opening a new one"
+            ).queue()
+        } catch (e: NoAlbumsAvailableException) {
+            event.hook.sendMessage(
+                "Couldn't open a new voting round because there are no albums available to vote on"
             ).queue()
         }
     }

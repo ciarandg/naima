@@ -4,6 +4,7 @@ import database
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
+import system.exception.NoAlbumsAvailableException
 import java.lang.Integer.min
 
 class VotingRound(eventHook: InteractionHook) {
@@ -22,7 +23,7 @@ class VotingRound(eventHook: InteractionHook) {
 
     private fun formatChoices() =
         if (choices.isEmpty()) {
-            "No albums available for vote"
+            throw NoAlbumsAvailableException()
         } else {
             choices.mapIndexed { i, pick ->
                 "${i + 1}. ${pick.releaseGroup.prettyName}"
