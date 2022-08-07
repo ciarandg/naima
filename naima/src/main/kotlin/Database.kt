@@ -35,4 +35,11 @@ class Database {
             inc(Suggestion::timesVoted, inc)
         )
     }
+
+    fun markAsChosen(suggestion: Suggestion) {
+        collection.updateOne(
+            Suggestion::releaseGroup eq suggestion.releaseGroup,
+            setValue(Suggestion::hasBeenChosen, true)
+        )
+    }
 }

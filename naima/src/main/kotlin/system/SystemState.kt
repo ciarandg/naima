@@ -22,6 +22,7 @@ object SystemState {
         val tally = getVoteTally(round)
         val winner = round.choices[tally.getWinner().emojiIndex]
         tally.forEach { database.incrementTimesVoted(round.choices[it.emojiIndex], it.voteCount) }
+        database.markAsChosen(winner)
         currentVotingRound = null
         return winner
     } ?: throw VotingRoundNotYetOpenException()
