@@ -7,7 +7,7 @@ import system.SystemState
 import system.data.Suggestion
 
 class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
-    private fun formatSelection(selection: Set<Suggestion>) =
+    private fun formatSelection(selection: List<Suggestion>) =
         if (selection.isEmpty()) {
             "No albums available for vote"
         } else {
@@ -22,13 +22,8 @@ class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHa
         event.deferReply().queue()
         val round = SystemState.openVotingRound()
         val message = event.hook.sendMessage(formatSelection(round.choices)).complete()
-        val emojis = voteEmojis.take(round.choices.size)
+        val emojis = Emojis.voteEmojis.take(round.choices.size)
         emojis.forEach { message.addReaction(it).queue() }
-    }
-
-    companion object {
-        private val voteEmojis = listOf(
-            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
-        ).map { Emoji.fromUnicode(EmojiManager.getForAlias(it).unicode) }
+        SystemState.votingMessage = message
     }
 }
