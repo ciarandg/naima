@@ -3,10 +3,12 @@
  */
 
 import com.mongodb.client.MongoCollection
+import musicbrainz.data.ReleaseGroup
 import org.litote.kmongo.KMongo
 import org.litote.kmongo.aggregate
 import org.litote.kmongo.ascending
 import org.litote.kmongo.eq
+import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import org.litote.kmongo.`in`
 import org.litote.kmongo.inc
@@ -49,4 +51,9 @@ class Database {
             setValue(Suggestion::hasBeenChosen, true)
         )
     }
+
+    fun getSuggestion(releaseGroup: ReleaseGroup): Suggestion? =
+        collection.findOne(
+            Suggestion::releaseGroup eq releaseGroup
+        )
 }

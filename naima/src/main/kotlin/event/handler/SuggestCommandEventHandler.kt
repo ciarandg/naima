@@ -10,20 +10,29 @@ import system.data.Suggestion
 
 class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
     private fun handleReleaseGroup(releaseGroup: ReleaseGroup) {
-        val requesterName = event.user.name
-        val suggestion = Suggestion(
-            releaseGroup,
-            event.user.id,
-            event.timeCreated.toInstant()
-        )
-        val coverEmbed = EmbedBuilder()
-            .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
-            .build()
-        event.hook
-            .sendMessage("$requesterName has requested ${releaseGroup.prettyName}")
-            .addEmbeds(coverEmbed)
-            .queue()
-        database.insert(suggestion)
+        database.getSuggestion(releaseGroup)?.let { suggestion ->
+            val ending =
+                if (suggestion.hasBeenChosen) "already been suggested and chosen in a vote"
+                else "already been suggested, but has not yet been chosen in a vote"
+            event.hook.sendMessage(
+                "Suggestion failed: ${suggestion.releaseGroup.prettyName} has $ending"
+            )
+        } ?: run {
+            val requesterName = event.user.name
+            val suggestion = Suggestion(
+                releaseGroup,
+                event.user.id,
+                event.timeCreated.toInstant()
+            )
+            val coverEmbed = EmbedBuilder()
+                .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
+                .build()
+            event.hook
+                .sendMessage("$requesterName has requested ${releaseGroup.prettyName}")
+                .addEmbeds(coverEmbed)
+                .queue()
+            database.insert(suggestion)
+        }
     }
 
     private fun handleSearchFailure() {
