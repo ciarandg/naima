@@ -12,5 +12,5 @@ services:
     volumes:
       # Make mongo data persist after docker container is destroyed
       - ./db:/data/db
-    ports:
-      - 27017:27017
+    # ports:
+    #   - 27017:27017
