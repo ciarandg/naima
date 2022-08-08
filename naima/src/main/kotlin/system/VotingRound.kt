@@ -33,6 +33,6 @@ class VotingRound(eventHook: InteractionHook) {
         }
 
     companion object {
-        private const val ALBUMS_PER_ROUND = 3
+        private const val ALBUMS_PER_ROUND = 5
     }
 }
