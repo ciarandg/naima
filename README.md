@@ -1,6 +1,6 @@
 # Naima
 
-Naima is a Discord bot for listening to albums with your friends! It stores album suggestions in a database and lets you vote on a random selection of them to decide what to listen to.
+Naima is a Discord bot for listening to albums with your friends! It stores album suggestions in a database and lets you vote on a random selection of them to decide what to listen to. Naima is intended for use in a music listening/discussion club, where members periodically pick an album to listen to collectively. It doesn't have any playback features.
 
 ![2022-08-09-153130_443x463_scrot](https://user-images.githubusercontent.com/38576930/183765453-46184e97-cf0f-4cbc-9ee8-bf29ba0d7064.png)
 ![2022-08-09-153142_403x217_scrot](https://user-images.githubusercontent.com/38576930/183765476-f7865e58-0387-4ff1-836c-d81aff31ff9a.png)
