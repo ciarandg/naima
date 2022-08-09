@@ -4,8 +4,8 @@ import database
 import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import musicbrainz.data.ReleaseGroup
-import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import discord.Embeds
 import system.data.Suggestion
 
 class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
@@ -24,12 +24,9 @@ class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHan
                 event.user.id,
                 event.timeCreated.toInstant()
             )
-            val coverEmbed = EmbedBuilder()
-                .setImage("https://coverartarchive.org/release-group/${releaseGroup.id}/front")
-                .build()
             event.hook
                 .sendMessage("$requesterName has requested ${releaseGroup.prettyName}")
-                .addEmbeds(coverEmbed)
+                .addEmbeds(Embeds.albumCoverEmbed(releaseGroup))
                 .queue()
             database.insert(suggestion)
         }

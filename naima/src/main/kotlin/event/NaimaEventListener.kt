@@ -1,6 +1,6 @@
 package event
 
-import command.NaimaCommands
+import discord.NaimaCommands
 import event.handler.CloseVoteCommandEventHandler
 import event.handler.OpenVoteCommandEventHandler
 import event.handler.SuggestCommandEventHandler

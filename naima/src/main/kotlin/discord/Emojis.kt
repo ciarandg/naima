@@ -1,3 +1,5 @@
+package discord
+
 import com.vdurmont.emoji.EmojiManager
 import net.dv8tion.jda.api.entities.emoji.Emoji
 

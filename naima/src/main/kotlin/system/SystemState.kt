@@ -1,6 +1,6 @@
 package system
 
-import Emojis
+import discord.Emojis
 import database
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion

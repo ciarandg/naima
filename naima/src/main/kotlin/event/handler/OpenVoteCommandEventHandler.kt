@@ -1,5 +1,6 @@
 package event.handler
 
+import discord.Emojis
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.SystemState
 import system.exception.NoAlbumsAvailableException
