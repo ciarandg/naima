@@ -1,7 +1,7 @@
 package event.handler
 
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import discord.Embeds
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import system.SystemState
 import system.exception.VotingRoundNotYetOpenException
 

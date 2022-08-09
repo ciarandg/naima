@@ -1,7 +1,7 @@
 package system
 
-import discord.Emojis
 import database
+import discord.Emojis
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
 import system.exception.VotingRoundAlreadyOpenException

@@ -1,11 +1,11 @@
 package event.handler
 
 import database
+import discord.Embeds
 import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import musicbrainz.data.ReleaseGroup
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import discord.Embeds
 import system.data.Suggestion
 
 class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
