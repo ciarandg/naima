@@ -12,7 +12,7 @@ Currently Naima needs to be self-hosted and will require a decent amount of tech
 
 ## Usage
 
-### `/submit`
+### `/suggest`
 
 Use this command to submit an album to Naima's database.
 
