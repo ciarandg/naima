@@ -27,9 +27,8 @@ class Database {
     }
 
     fun getSuggestionsRanked(): List<Suggestion> = collection.aggregate<Suggestion>(
-        match(Suggestion::hasBeenChosen eq false),
-        sort(ascending(Suggestion::timesVotable))
-    ).toList()
+        match(Suggestion::hasBeenChosen eq false)
+    ).shuffled().sortedBy { it.timesVotable }
 
     fun incrementTimesVotable(suggestions: Collection<Suggestion>) {
         collection.updateMany(
