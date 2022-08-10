@@ -16,6 +16,7 @@ object SystemState {
         throw VotingRoundAlreadyOpenException()
     } ?: run {
         val choices = getRoundChoices()
+        database.suggestions.incrementTimesVotable(choices)
         val message = eventHook.sendMessage(VotingRound.formatChoices(choices)).complete()
         val round = VotingRound(
             choices,
