@@ -5,35 +5,28 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
 import system.data.VotingRound
-import system.exception.NoAlbumsAvailableException
 import java.lang.Integer.min
 
 class VotingRoundWrapper(eventHook: InteractionHook) {
     private val choices: List<Suggestion> = run {
-        val allSuggestions = database.suggestions.getSuggestionsRanked()
+        val allSuggestions = database.suggestions.getUnchosenRanked()
         allSuggestions.take(min(ALBUMS_PER_ROUND, allSuggestions.size))
     }
-    private val message: Message = eventHook.sendMessage(formatChoices()).complete()
+
+    private val message: Message = eventHook.sendMessage(
+        VotingRound.formatChoices(choices)
+    ).complete()
+
     val round = VotingRound(
         choices,
         message.channel.id,
-        message.id
+        message.id,
+        true
     )
 
     init {
         database.suggestions.incrementTimesVotable(round.choices)
     }
-
-    private fun formatChoices() =
-        if (round.choices.isEmpty()) {
-            throw NoAlbumsAvailableException()
-        } else {
-            round.choices.mapIndexed { i, pick ->
-                "${i + 1}. ${pick.releaseGroup.prettyName}"
-            }.reduce { acc, s ->
-                acc + "\n" + s
-            }
-        }
 
     companion object {
         private const val ALBUMS_PER_ROUND = 5

@@ -12,11 +12,11 @@ import org.litote.kmongo.setValue
 import system.data.Suggestion
 
 class SuggestionsCollection(private val collection: MongoCollection<Suggestion>) {
-    fun insertSuggestion(suggestion: Suggestion) {
+    fun insert(suggestion: Suggestion) {
         collection.insertOne(suggestion)
     }
 
-    fun getSuggestionsRanked(): List<Suggestion> = collection.aggregate<Suggestion>(
+    fun getUnchosenRanked(): List<Suggestion> = collection.aggregate<Suggestion>(
         match(Suggestion::hasBeenChosen eq false)
     ).shuffled().sortedBy { it.timesVotable }
 

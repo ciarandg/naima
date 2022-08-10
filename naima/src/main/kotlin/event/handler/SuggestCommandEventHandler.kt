@@ -28,7 +28,7 @@ class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHan
                 .sendMessage("$requesterName has requested ${releaseGroup.prettyName}")
                 .addEmbeds(Embeds.albumCoverEmbed(releaseGroup))
                 .queue()
-            database.suggestions.insertSuggestion(suggestion)
+            database.suggestions.insert(suggestion)
         }
     }
 

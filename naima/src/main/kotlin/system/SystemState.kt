@@ -9,22 +9,19 @@ import system.exception.VotingRoundAlreadyOpenException
 import system.exception.VotingRoundNotYetOpenException
 
 object SystemState {
-    private var currentVotingRound: VotingRoundWrapper? = null
-
-    fun openVotingRound(eventHook: InteractionHook): VotingRound = currentVotingRound?.let {
+    fun openVotingRound(eventHook: InteractionHook): VotingRound = database.votingRounds.getOpenRound()?.let {
         throw VotingRoundAlreadyOpenException()
     } ?: run {
-        val newRound = VotingRoundWrapper(eventHook)
-        currentVotingRound = newRound
-        return newRound.round
+        database.votingRounds.insert(VotingRoundWrapper(eventHook).round)
+        return database.votingRounds.getOpenRound() ?: throw IllegalStateException("There must be an open round")
     }
 
-    fun closeVotingRound(): Suggestion = currentVotingRound?.let { round ->
-        val tally = getVoteTally(round.round)
-        val winner = round.round.choices[tally.getWinner().emojiIndex]
-        tally.forEach { database.suggestions.incrementTimesVoted(round.round.choices[it.emojiIndex], it.voteCount) }
+    fun closeVotingRound(): Suggestion = database.votingRounds.getOpenRound()?.let { round ->
+        val tally = getVoteTally(round)
+        val winner = round.choices[tally.getWinner().emojiIndex]
+        tally.forEach { database.suggestions.incrementTimesVoted(round.choices[it.emojiIndex], it.voteCount) }
         database.suggestions.markAsChosen(winner)
-        currentVotingRound = null
+        database.votingRounds.markAsClosed(round, winner)
         return winner
     } ?: throw VotingRoundNotYetOpenException()
 
