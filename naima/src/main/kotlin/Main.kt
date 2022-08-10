@@ -1,4 +1,5 @@
 import Environment.botToken
+import database.Database
 import event.NaimaEventListener
 import net.dv8tion.jda.api.JDABuilder
 

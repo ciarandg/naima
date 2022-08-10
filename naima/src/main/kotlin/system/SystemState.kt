@@ -22,8 +22,8 @@ object SystemState {
     fun closeVotingRound(): Suggestion = currentVotingRound?.let { round ->
         val tally = getVoteTally(round.round)
         val winner = round.round.choices[tally.getWinner().emojiIndex]
-        tally.forEach { database.incrementTimesVoted(round.round.choices[it.emojiIndex], it.voteCount) }
-        database.markAsChosen(winner)
+        tally.forEach { database.suggestions.incrementTimesVoted(round.round.choices[it.emojiIndex], it.voteCount) }
+        database.suggestions.markAsChosen(winner)
         currentVotingRound = null
         return winner
     } ?: throw VotingRoundNotYetOpenException()

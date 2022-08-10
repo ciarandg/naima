@@ -10,7 +10,7 @@ import java.lang.Integer.min
 
 class VotingRoundWrapper(eventHook: InteractionHook) {
     private val choices: List<Suggestion> = run {
-        val allSuggestions = database.getSuggestionsRanked()
+        val allSuggestions = database.suggestions.getSuggestionsRanked()
         allSuggestions.take(min(ALBUMS_PER_ROUND, allSuggestions.size))
     }
     private val message: Message = eventHook.sendMessage(formatChoices()).complete()
@@ -21,7 +21,7 @@ class VotingRoundWrapper(eventHook: InteractionHook) {
     )
 
     init {
-        database.incrementTimesVotable(round.choices)
+        database.suggestions.incrementTimesVotable(round.choices)
     }
 
     private fun formatChoices() =
