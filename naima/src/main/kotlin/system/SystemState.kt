@@ -4,22 +4,23 @@ import database
 import discord.Emojis
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
+import system.data.VotingRound
 import system.exception.VotingRoundAlreadyOpenException
 import system.exception.VotingRoundNotYetOpenException
 
 object SystemState {
     private var currentVotingRound: VotingRoundWrapper? = null
 
-    fun openVotingRound(eventHook: InteractionHook): VotingRoundWrapper = currentVotingRound?.let {
+    fun openVotingRound(eventHook: InteractionHook): VotingRound = currentVotingRound?.let {
         throw VotingRoundAlreadyOpenException()
     } ?: run {
         val newRound = VotingRoundWrapper(eventHook)
         currentVotingRound = newRound
-        return newRound
+        return newRound.round
     }
 
     fun closeVotingRound(): Suggestion = currentVotingRound?.let { round ->
-        val tally = getVoteTally(round)
+        val tally = getVoteTally(round.round)
         val winner = round.round.choices[tally.getWinner().emojiIndex]
         tally.forEach { database.incrementTimesVoted(round.round.choices[it.emojiIndex], it.voteCount) }
         database.markAsChosen(winner)
@@ -27,11 +28,11 @@ object SystemState {
         return winner
     } ?: throw VotingRoundNotYetOpenException()
 
-    private fun getVoteTally(votingRound: VotingRoundWrapper): List<VoteTallyItem> {
+    private fun getVoteTally(votingRound: VotingRound): List<VoteTallyItem> {
         val reactions = votingRound.fetchVotingMessage().reactions
         return reactions
             .map { VoteTallyItem(Emojis.emojiToIndex(it.emoji), it.count - 1) }
-            .filter { it.emojiIndex >= 0 && it.emojiIndex < votingRound.round.choices.size }
+            .filter { it.emojiIndex >= 0 && it.emojiIndex < votingRound.choices.size }
     }
 
     private fun List<VoteTallyItem>.getWinner(): VoteTallyItem {

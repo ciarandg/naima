@@ -1,7 +1,6 @@
 package system
 
 import database
-import jda
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
@@ -23,14 +22,6 @@ class VotingRoundWrapper(eventHook: InteractionHook) {
 
     init {
         database.incrementTimesVotable(round.choices)
-    }
-
-    fun fetchVotingMessage(): Message {
-        val channel = jda.getTextChannelById(round.voteChannelId)
-            ?: throw IllegalStateException("Voting channel must exist")
-        return channel
-            .retrieveMessageById(round.voteMessageId)
-            .complete()
     }
 
     private fun formatChoices() =

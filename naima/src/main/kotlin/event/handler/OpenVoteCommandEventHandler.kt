@@ -11,7 +11,7 @@ class OpenVoteCommandEventHandler(event: SlashCommandInteractionEvent) : EventHa
         event.deferReply().queue()
         try {
             val round = SystemState.openVotingRound(event.hook)
-            val emojis = Emojis.voteEmojis.take(round.round.choices.size)
+            val emojis = Emojis.voteEmojis.take(round.choices.size)
             emojis.forEach { round.fetchVotingMessage().addReaction(it).queue() }
         } catch (e: VotingRoundAlreadyOpenException) {
             event.hook.sendMessage(
