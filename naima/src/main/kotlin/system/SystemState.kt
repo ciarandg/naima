@@ -7,13 +7,28 @@ import system.data.Suggestion
 import system.data.VotingRound
 import system.exception.VotingRoundAlreadyOpenException
 import system.exception.VotingRoundNotYetOpenException
+import java.lang.Integer.min
 
 object SystemState {
+    private const val ALBUMS_PER_ROUND = 5
+
     fun openVotingRound(eventHook: InteractionHook): VotingRound = database.votingRounds.getOpenRound()?.let {
         throw VotingRoundAlreadyOpenException()
     } ?: run {
-        database.votingRounds.insert(VotingRoundWrapper(eventHook).round)
+        val choices = getRoundChoices()
+        val message = eventHook.sendMessage(VotingRound.formatChoices(choices)).complete()
+        val round = VotingRound(
+            choices,
+            message.channel.id,
+            message.id
+        )
+        database.votingRounds.insert(round)
         return database.votingRounds.getOpenRound() ?: throw IllegalStateException("There must be an open round")
+    }
+
+    private fun getRoundChoices(): List<Suggestion> {
+        val allSuggestions = database.suggestions.getUnchosenRanked()
+        return allSuggestions.take(min(ALBUMS_PER_ROUND, allSuggestions.size))
     }
 
     fun closeVotingRound(): Suggestion = database.votingRounds.getOpenRound()?.let { round ->
