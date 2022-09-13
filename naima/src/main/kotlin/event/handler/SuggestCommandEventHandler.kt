@@ -10,7 +10,7 @@ import system.data.Suggestion
 
 class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
     private fun handleReleaseGroup(releaseGroup: ReleaseGroup) {
-        database.getSuggestion(releaseGroup)?.let { suggestion ->
+        database.suggestions.getSuggestion(releaseGroup)?.let { suggestion ->
             val ending =
                 if (suggestion.hasBeenChosen) "already been suggested and chosen in a vote"
                 else "already been suggested, but has not yet been chosen in a vote"
@@ -28,7 +28,7 @@ class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHan
                 .sendMessage("$requesterName has requested ${releaseGroup.prettyName}")
                 .addEmbeds(Embeds.albumCoverEmbed(releaseGroup))
                 .queue()
-            database.insert(suggestion)
+            database.suggestions.insert(suggestion)
         }
     }
 

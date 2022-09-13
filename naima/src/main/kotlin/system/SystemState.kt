@@ -4,26 +4,40 @@ import database
 import discord.Emojis
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
+import system.data.VotingRound
 import system.exception.VotingRoundAlreadyOpenException
 import system.exception.VotingRoundNotYetOpenException
+import java.lang.Integer.min
 
 object SystemState {
-    private var currentVotingRound: VotingRound? = null
+    private const val ALBUMS_PER_ROUND = 5
 
-    fun openVotingRound(eventHook: InteractionHook): VotingRound = currentVotingRound?.let {
+    fun openVotingRound(eventHook: InteractionHook): VotingRound = database.votingRounds.getOpenRound()?.let {
         throw VotingRoundAlreadyOpenException()
     } ?: run {
-        val newRound = VotingRound(eventHook)
-        currentVotingRound = newRound
-        return newRound
+        val choices = getRoundChoices()
+        database.suggestions.incrementTimesVotable(choices)
+        val message = eventHook.sendMessage(VotingRound.formatChoices(choices)).complete()
+        val round = VotingRound(
+            choices,
+            message.channel.id,
+            message.id
+        )
+        database.votingRounds.insert(round)
+        return database.votingRounds.getOpenRound() ?: throw IllegalStateException("There must be an open round")
     }
 
-    fun closeVotingRound(): Suggestion = currentVotingRound?.let { round ->
+    private fun getRoundChoices(): List<Suggestion> {
+        val allSuggestions = database.suggestions.getUnchosenRanked()
+        return allSuggestions.take(min(ALBUMS_PER_ROUND, allSuggestions.size))
+    }
+
+    fun closeVotingRound(): Suggestion = database.votingRounds.getOpenRound()?.let { round ->
         val tally = getVoteTally(round)
         val winner = round.choices[tally.getWinner().emojiIndex]
-        tally.forEach { database.incrementTimesVoted(round.choices[it.emojiIndex], it.voteCount) }
-        database.markAsChosen(winner)
-        currentVotingRound = null
+        tally.forEach { database.suggestions.incrementTimesVoted(round.choices[it.emojiIndex], it.voteCount) }
+        database.suggestions.markAsChosen(winner)
+        database.votingRounds.markAsClosed(round, winner)
         return winner
     } ?: throw VotingRoundNotYetOpenException()
 
