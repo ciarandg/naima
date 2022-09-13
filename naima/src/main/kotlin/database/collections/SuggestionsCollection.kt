@@ -23,27 +23,28 @@ class SuggestionsCollection(private val collection: MongoCollection<Suggestion>)
 
     fun incrementTimesVotable(suggestions: Collection<Suggestion>) {
         collection.updateMany(
-            Suggestion::releaseGroup `in` suggestions.map { it.releaseGroup },
+            Suggestion::releaseGroup / ReleaseGroup::id `in` suggestions.map { it.releaseGroup.id },
             inc(Suggestion::timesVotable, 1)
         )
     }
 
     fun incrementTimesVoted(suggestion: Suggestion, inc: Int) {
         collection.updateOne(
-            Suggestion::releaseGroup eq suggestion.releaseGroup,
+            releaseGroupEq(suggestion.releaseGroup),
             inc(Suggestion::timesVoted, inc)
         )
     }
 
     fun markAsChosen(suggestion: Suggestion) {
         collection.updateOne(
-            Suggestion::releaseGroup eq suggestion.releaseGroup,
+            releaseGroupEq(suggestion.releaseGroup),
             setValue(Suggestion::hasBeenChosen, true)
         )
     }
 
     fun getSuggestion(releaseGroup: ReleaseGroup): Suggestion? =
-        collection.findOne(
-            Suggestion::releaseGroup / ReleaseGroup::id eq releaseGroup.id
-        )
+        collection.findOne(releaseGroupEq(releaseGroup))
+
+    private fun releaseGroupEq(releaseGroup: ReleaseGroup) =
+        Suggestion::releaseGroup / ReleaseGroup::id eq releaseGroup.id
 }
