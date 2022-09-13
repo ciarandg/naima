@@ -3,6 +3,7 @@ package database.collections
 import com.mongodb.client.MongoCollection
 import musicbrainz.data.ReleaseGroup
 import org.litote.kmongo.aggregate
+import org.litote.kmongo.div
 import org.litote.kmongo.eq
 import org.litote.kmongo.findOne
 import org.litote.kmongo.`in`
@@ -43,6 +44,6 @@ class SuggestionsCollection(private val collection: MongoCollection<Suggestion>)
 
     fun getSuggestion(releaseGroup: ReleaseGroup): Suggestion? =
         collection.findOne(
-            Suggestion::releaseGroup eq releaseGroup
+            Suggestion::releaseGroup / ReleaseGroup::id eq releaseGroup.id
         )
 }
