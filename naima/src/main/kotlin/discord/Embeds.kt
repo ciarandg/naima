@@ -27,8 +27,7 @@ object Embeds {
 
         suspend fun fetchImageInBytes(): ByteArray? = run {
             val response = client.get(albumCoverUrl(releaseGroup))
-            if (response.status != HttpStatusCode.OK) { null}
-            else { response.body() }
+            if (response.status != HttpStatusCode.OK) { null } else { response.body() }
         }
         suspend fun writeToFile() {
             fetchImageInBytes()?.let { file.writeBytes(it) }
@@ -46,8 +45,7 @@ object Embeds {
             println("Checking album ${it.releaseGroup.prettyName}")
             println("Does ${it.file.absolutePath} exist? ${it.file.isFile}")
             println()
-            if (it.file.isFile) { it.localPath }
-            else { placeHolderPath}
+            if (it.file.isFile) { it.localPath } else { placeHolderPath }
         }
 
         // feed paths into imagemagick script, spit file out into temp dir
