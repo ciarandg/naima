@@ -22,7 +22,7 @@ object Embeds {
         .build()
 
     private class AlbumCoverEntry(val releaseGroup: ReleaseGroup) {
-        val file: File = File("./${releaseGroup.id}.jpg")
+        val file: File = File("/tmp/album-cover-${releaseGroup.id}.jpg")
 
         suspend fun fetchImageInBytes(): ByteArray? = run {
             val response = client.get(albumCoverUrl(releaseGroup))
