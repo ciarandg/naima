@@ -22,8 +22,7 @@ object Embeds {
         .build()
 
     private class AlbumCoverEntry(val releaseGroup: ReleaseGroup) {
-        val localPath: Path = Path.of("./${releaseGroup.id}.jpg")
-        val file: File = localPath.toFile()
+        val file: File = File("./${releaseGroup.id}.jpg")
 
         suspend fun fetchImageInBytes(): ByteArray? = run {
             val response = client.get(albumCoverUrl(releaseGroup))
@@ -41,11 +40,11 @@ object Embeds {
 
         // map nulls to a placeholder image path
         val imagePaths = entries.map {
-            val placeHolderPath = Path.of("./album_cover_placeholder.jpg")
+            val placeHolderPath = "./album_cover_placeholder.jpg"
             println("Checking album ${it.releaseGroup.prettyName}")
             println("Does ${it.file.absolutePath} exist? ${it.file.isFile}")
             println()
-            if (it.file.isFile) { it.localPath } else { placeHolderPath }
+            if (it.file.isFile) { it.file.path } else { placeHolderPath }
         }
 
         // feed paths into imagemagick script, spit file out into temp dir
