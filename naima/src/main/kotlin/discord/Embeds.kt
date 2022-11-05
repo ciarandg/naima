@@ -40,7 +40,8 @@ object Embeds {
 
         // map nulls to a placeholder image path
         val imagePaths = entries.map {
-            val placeHolderPath = "./album_cover_placeholder.jpg"
+            val placeHolderPath = ClassLoader.getSystemResource("album_cover_placeholder.jpg").path
+            println("Placeholder ${File(placeHolderPath).absolutePath} is file? ${File(placeHolderPath).isFile}")
             println("Checking album ${it.releaseGroup.prettyName}")
             println("Does ${it.file.absolutePath} exist? ${it.file.isFile}")
             println()
