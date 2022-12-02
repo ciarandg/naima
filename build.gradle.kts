@@ -8,6 +8,7 @@ plugins {
     kotlin("jvm") version "1.6.20"
     kotlin("plugin.serialization") version "1.6.20"
     id("com.diffplug.spotless") version "6.9.0"
+    id("com.google.cloud.tools.jib") version "3.3.1"
     application
 }
 
