@@ -74,4 +74,4 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Build and push Docker image
-        run: ./gradlew jib -Djib.to.image="${{ env.IMAGE_NAME }}:${{ github.ref_name }}"
+        run: ./gradlew jib -Djib.to.image="${{ env.IMAGE_NAME }}:${{ steps.date.outputs.date }}"
