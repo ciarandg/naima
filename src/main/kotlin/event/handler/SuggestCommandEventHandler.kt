@@ -1,7 +1,7 @@
 package event.handler
 
 import database
-import discord.Embeds
+import discord.embed.AlbumCoverEmbed
 import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
 import musicbrainz.data.ReleaseGroup
@@ -26,7 +26,7 @@ class SuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHan
             )
             event.hook
                 .sendMessage("$requesterName has requested ${releaseGroup.prettyName}")
-                .addEmbeds(Embeds.albumCoverEmbed(releaseGroup))
+                .addEmbeds(AlbumCoverEmbed(releaseGroup).build())
                 .queue()
             database.suggestions.insert(suggestion)
         }

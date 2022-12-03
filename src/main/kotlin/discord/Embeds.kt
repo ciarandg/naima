@@ -1,31 +1,23 @@
 package discord
 
+import discord.embed.AlbumCoverEmbed
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import musicbrainz.data.ReleaseGroup
-import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.io.File
-import java.nio.file.Path
 
 object Embeds {
     private val client = HttpClient(CIO)
-
-    private fun albumCoverUrl(releaseGroup: ReleaseGroup) =
-        "https://coverartarchive.org/release-group/${releaseGroup.id}/front"
-
-    fun albumCoverEmbed(releaseGroup: ReleaseGroup) = EmbedBuilder()
-        .setImage(albumCoverUrl(releaseGroup))
-        .build()
 
     private class AlbumCoverEntry(val releaseGroup: ReleaseGroup) {
         val file: File = File("/tmp/album-cover-${releaseGroup.id}.jpg")
 
         suspend fun fetchImageInBytes(): ByteArray? = run {
-            val response = client.get(albumCoverUrl(releaseGroup))
+            val response = client.get(AlbumCoverEmbed(releaseGroup).imageUrl)
             if (response.status != HttpStatusCode.OK) { null } else { response.body() }
         }
         suspend fun writeToFile() {
