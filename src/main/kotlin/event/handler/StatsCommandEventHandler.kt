@@ -9,6 +9,7 @@ class StatsCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandl
         event.hook.sendMessage(
             """
             Total suggestions: ${database.suggestions.countDocuments()}
+            Unselected suggestions: ${database.suggestions.getUnchosenRanked().size}
             Total voting rounds: ${database.votingRounds.countDocuments()}
             """.trimIndent()
         ).queue()
