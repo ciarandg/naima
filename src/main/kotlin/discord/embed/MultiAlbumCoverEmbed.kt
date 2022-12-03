@@ -25,7 +25,6 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
         ).spaceDelimit()
     }
 
-
     private val fallbackImageUrl = "https://coverartarchive.org/release-group/a5572828-f7f2-405d-8853-a2019b019e07/front"
 
     private val imageUrl: String by lazy {

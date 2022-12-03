@@ -1,10 +1,8 @@
 package discord.embed
 
 import kotlinx.coroutines.runBlocking
-import musicbrainz.MusicBrainz
 import musicbrainz.MusicBrainz.searchForReleaseGroup
 import musicbrainz.data.ReleaseGroup
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class MultiAlbumCoverEmbedTest {

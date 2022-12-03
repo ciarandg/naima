@@ -3,7 +3,6 @@ package system
 import database
 import discord.Emojis
 import discord.embed.MultiAlbumCoverEmbed
-import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
 import system.data.VotingRound
