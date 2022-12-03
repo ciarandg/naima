@@ -27,10 +27,13 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
 
 
     private val fallbackImageUrl = "https://coverartarchive.org/release-group/a5572828-f7f2-405d-8853-a2019b019e07/front"
-    val imageUrl: String by lazy {
-        "TODO"
+
+    private val imageUrl: String by lazy {
+        fallbackImageUrl
     }
-    fun build(): MessageEmbed = TODO()
+    fun build(): MessageEmbed = EmbedBuilder()
+        .setImage(imageUrl)
+        .build()
 
     private fun generateImage(): File? {
         val processBuilder = ProcessBuilder(imageMagickCommand)
