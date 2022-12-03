@@ -1,8 +1,8 @@
 object Environment {
     val botToken: String = System.getenv("BOT_TOKEN")
-    val mongoUser: String = System.getenv("MONGODB_INITDB_ROOT_USERNAME")
-    val mongoPassword: String = System.getenv("MONGODB_INITDB_ROOT_PASSWORD")
-    val mongoHost: String = System.getenv("MONGODB_HOST")
+    val mongoUser: String = System.getenv("MONGO_INITDB_ROOT_USERNAME")
+    val mongoPassword: String = System.getenv("MONGO_INITDB_ROOT_PASSWORD")
+    val mongoHost: String = System.getenv("MONGO_HOST")
     val mongoConnString: String = "mongodb://${mongoUser}:${mongoPassword}@${mongoHost}"
 
     object ChannelIDs {
