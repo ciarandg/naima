@@ -1,8 +1,8 @@
 package system
 
 import database
-import discord.Embeds
 import discord.Emojis
+import discord.embed.MultiAlbumCoverEmbed
 import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
@@ -19,10 +19,9 @@ object SystemState {
     } ?: run {
         val choices = getRoundChoices()
         database.suggestions.incrementTimesVotable(choices)
-        val multiAlbumCoverEmbed = runBlocking { Embeds.multiAlbumCoverEmbed(choices.map { it.releaseGroup }) }
         val message = eventHook
             .sendMessage(VotingRound.formatChoices(choices))
-            .addEmbeds(multiAlbumCoverEmbed)
+            .addEmbeds(MultiAlbumCoverEmbed(choices.map { it.releaseGroup }).build())
             .complete()
         val round = VotingRound(
             choices,
