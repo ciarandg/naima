@@ -10,7 +10,7 @@ import system.data.VotingRound
 
 class VotingRoundsCollection(
     private val collection: MongoCollection<VotingRound>
-    ) : MongoCollection<VotingRound> by collection {
+) : MongoCollection<VotingRound> by collection {
     fun insert(votingRound: VotingRound) {
         collection.insertOne(votingRound)
     }

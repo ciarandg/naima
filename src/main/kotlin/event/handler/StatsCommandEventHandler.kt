@@ -5,9 +5,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 class StatsCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
     override fun handle() {
-        event.hook.sendMessage("""
+        event.hook.sendMessage(
+            """
             Total suggestions: ${database.suggestions.countDocuments()}
             Total voting rounds: ${database.votingRounds.countDocuments()}
-        """.trimIndent())
+            """.trimIndent()
+        )
     }
 }

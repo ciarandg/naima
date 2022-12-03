@@ -14,7 +14,7 @@ import system.data.Suggestion
 
 class SuggestionsCollection(
     private val collection: MongoCollection<Suggestion>
-    ) : MongoCollection<Suggestion> by collection {
+) : MongoCollection<Suggestion> by collection {
     fun insert(suggestion: Suggestion) {
         collection.insertOne(suggestion)
     }
