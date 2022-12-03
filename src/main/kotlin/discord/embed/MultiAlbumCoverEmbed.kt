@@ -10,9 +10,11 @@ import net.dv8tion.jda.api.entities.MessageEmbed
 import java.io.File
 
 class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
+    private val fallbackImageUrl = "https://coverartarchive.org/release-group/a5572828-f7f2-405d-8853-a2019b019e07/front"
+
     private val localFilename = run {
         val ids = releaseGroups.map { it.id }
-        val combined = ids.reduce { acc, id -> "$acc-$id" }
+        val combined = ids.reduce { acc, id -> "${acc}_$id" }
         "$combined.jpg"
     }
 
@@ -20,20 +22,22 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
 
     private val imageMagickCommand = run {
         val imageUrls = releaseGroups.map { AlbumCoverEmbed(it).imageUrl }
-        fun List<String>.spaceDelimit() = this.reduce { acc, s -> "$acc $s" }
-        val urlsCombined = imageUrls.map { '"' + it + '"' }.spaceDelimit()
         listOf(
-            "magick",
-            urlsCombined,
-            "-resize $ALBUM_COVER_WIDTH_PX",
-            "-crop " + ALBUM_COVER_WIDTH_PX + "x" + ALBUM_COVER_WIDTH_PX,
-            "+append $localPath"
-        ).spaceDelimit()
+            listOf("magick"),
+            imageUrls,
+            listOf(
+                "-resize", "${ALBUM_COVER_WIDTH_PX}x$ALBUM_COVER_WIDTH_PX",
+                "+append",
+            ),
+            listOf(localPath)
+        ).flatten()
     }
 
-    private val fallbackImageUrl = "https://coverartarchive.org/release-group/a5572828-f7f2-405d-8853-a2019b019e07/front"
-
     private val imageUrl: String by lazy {
+        val imageFile = generateImage()
+        imageFile?.let {
+            uploadToObjectStorage()
+        }
         fallbackImageUrl
     }
     fun build(): MessageEmbed = EmbedBuilder()
@@ -41,9 +45,20 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
         .build()
 
     private fun generateImage(): File? {
-        val processBuilder = ProcessBuilder(imageMagickCommand)
-        val process = processBuilder.start()
+        println("About to run the following command:")
+        println(imageMagickCommand)
+
+        val process = ProcessBuilder(imageMagickCommand)
+            .redirectError(File("/tmp/naima-imagemagick.log"))
+            .start()
+
         process.waitFor()
+        if (process.exitValue() == 0) {
+            println("Successfully wrote a multi album cover image to $localPath")
+        } else {
+            println("Failed to write a multi album cover image to $localPath")
+        }
+
         return File(localPath).let { if (it.isFile) it else null }
     }
 
