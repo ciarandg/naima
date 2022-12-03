@@ -12,7 +12,9 @@ import org.litote.kmongo.match
 import org.litote.kmongo.setValue
 import system.data.Suggestion
 
-class SuggestionsCollection(private val collection: MongoCollection<Suggestion>) {
+class SuggestionsCollection(
+    private val collection: MongoCollection<Suggestion>
+    ) : MongoCollection<Suggestion> by collection {
     fun insert(suggestion: Suggestion) {
         collection.insertOne(suggestion)
     }
