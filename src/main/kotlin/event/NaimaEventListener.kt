@@ -3,6 +3,7 @@ package event
 import discord.NaimaCommands
 import event.handler.CloseVoteCommandEventHandler
 import event.handler.OpenVoteCommandEventHandler
+import event.handler.StatsCommandEventHandler
 import event.handler.SuggestCommandEventHandler
 import jda
 import net.dv8tion.jda.api.events.ReadyEvent
@@ -15,7 +16,8 @@ class NaimaEventListener : ListenerAdapter() {
         jda.updateCommands().addCommands(
             NaimaCommands.suggestCommand,
             NaimaCommands.openVoteCommand,
-            NaimaCommands.closeVoteCommand
+            NaimaCommands.closeVoteCommand,
+            NaimaCommands.statsCommand
         ).complete()
         println("Updated commands!")
     }
@@ -25,6 +27,7 @@ class NaimaEventListener : ListenerAdapter() {
             NaimaCommands.suggestCommand.name -> SuggestCommandEventHandler(event).handle()
             NaimaCommands.openVoteCommand.name -> OpenVoteCommandEventHandler(event).handle()
             NaimaCommands.closeVoteCommand.name -> CloseVoteCommandEventHandler(event).handle()
+            NaimaCommands.statsCommand.name -> StatsCommandEventHandler(event).handle()
             else -> throw IllegalStateException("User a command that shouldn't exist: /${event.name}")
         }
     }

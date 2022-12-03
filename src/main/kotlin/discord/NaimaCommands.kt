@@ -9,4 +9,5 @@ object NaimaCommands {
         .addOption(OptionType.STRING, "album", "The album's title", true)
     val openVoteCommand = Commands.slash("open", "Open a voting round")
     val closeVoteCommand = Commands.slash("close", "Close the currently open voting round")
+    val statsCommand = Commands.slash("stats", "Get some statistics about the album catalog")
 }
