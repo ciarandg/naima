@@ -8,7 +8,9 @@ import org.litote.kmongo.setTo
 import system.data.Suggestion
 import system.data.VotingRound
 
-class VotingRoundsCollection(private val collection: MongoCollection<VotingRound>) {
+class VotingRoundsCollection(
+    private val collection: MongoCollection<VotingRound>
+    ) : MongoCollection<VotingRound> by collection {
     fun insert(votingRound: VotingRound) {
         collection.insertOne(votingRound)
     }
