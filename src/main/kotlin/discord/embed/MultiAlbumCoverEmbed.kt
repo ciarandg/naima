@@ -8,74 +8,93 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import com.amazonaws.services.s3.model.CannedAccessControlList
 import musicbrainz.data.ReleaseGroup
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.io.File
+import java.net.URL
 
 class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
-    private val fallbackImageUrl = "https://coverartarchive.org/release-group/a5572828-f7f2-405d-8853-a2019b019e07/front"
-
+    private val fallbackImageUrl = URL("https://coverartarchive.org/release-group/a5572828-f7f2-405d-8853-a2019b019e07/front")
     private val localFilename = run {
         val ids = releaseGroups.map { it.id }
         val combined = ids.reduce { acc, id -> "${acc}_$id" }
         "$combined.jpg"
     }
-
     private val localFile = File("/tmp/$localFilename")
+    private val imageGenerator = ImageGenerator(releaseGroups)
 
-    private val imageMagickCommand = run {
-        val imageUrls = releaseGroups.map { AlbumCoverEmbed(it).imageUrl }
-        listOf(
-            listOf("magick"),
-            imageUrls,
-            listOf(
-                "-resize", "${ALBUM_COVER_WIDTH_PX}x$ALBUM_COVER_WIDTH_PX",
-                "+append",
-            ),
-            listOf(localFile.absolutePath)
-        ).flatten()
-    }
-
-    private val imageUrl: String by lazy {
-        writeLocalFile()
-        uploadToObjectStorage()
-        fallbackImageUrl
-    }
-    fun build(): MessageEmbed = EmbedBuilder()
-        .setImage(imageUrl)
-        .build()
-
-    private fun writeLocalFile() {
-        println("About to run the following command:")
-        println(imageMagickCommand)
-
-        val process = ProcessBuilder(imageMagickCommand)
-            .redirectError(File("/tmp/naima-imagemagick.log"))
-            .start()
-
-        process.waitFor()
-        if (process.exitValue() == 0) {
-            println("Successfully wrote a multi album cover image to $localFile")
+    fun build(): MessageEmbed {
+        imageGenerator.generate(localFile)
+        val url = if (localFile.isFile) {
+            val pm = PersistenceManager(localFile)
+            pm.upload()
+            pm.makePubliclyReadable()
+            pm.getUrl()
         } else {
-            println("Failed to write a multi album cover image to $localFile")
+            fallbackImageUrl
+        }
+        return EmbedBuilder().setImage(url.toExternalForm()).build()
+    }
+
+
+    private class ImageGenerator(private val releaseGroups: List<ReleaseGroup>) {
+        private fun imageMagickCommand(writeTo: File): List<String> {
+            val imageUrls = releaseGroups.map { AlbumCoverEmbed(it).imageUrl }
+            return listOf(
+                listOf("magick"),
+                imageUrls,
+                listOf(
+                    "-resize", "${ALBUM_COVER_WIDTH_PX}x$ALBUM_COVER_WIDTH_PX",
+                    "+append",
+                ),
+                listOf(writeTo.absolutePath)
+            ).flatten()
+        }
+
+        fun generate(writeTo: File) {
+            val command = imageMagickCommand(writeTo)
+
+            println("About to run the following command:")
+            println(command)
+
+            val process = ProcessBuilder(command)
+                .redirectError(File("/tmp/naima-imagemagick.log"))
+                .start()
+
+            process.waitFor()
+            if (process.exitValue() == 0) {
+                println("Successfully wrote a multi album cover image to $writeTo")
+            } else {
+                println("Failed to write a multi album cover image to $writeTo")
+            }
         }
     }
 
-    private fun uploadToObjectStorage() {
-        val credentials = BasicAWSCredentials(accessKey, secretKey)
+    private class PersistenceManager(private val file: File) {
+        private val objectKey = "multi-album-covers/${file.name}"
+        private val s3Credentials = BasicAWSCredentials(accessKey, secretKey)
 
-        val client = AmazonS3ClientBuilder
+        private val s3Client = AmazonS3ClientBuilder
             .standard()
             .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(
                 endpoint, ""
             ))
-            .withCredentials(AWSStaticCredentialsProvider(credentials))
+            .withCredentials(AWSStaticCredentialsProvider(s3Credentials))
             .build()
 
-        writeLocalFile()
-        client.putObject(bucket, "multi-album-covers/${localFile.name}", localFile)
+        fun upload() {
+            s3Client.putObject(bucket, objectKey, file)
+        }
+
+        fun makePubliclyReadable() {
+            s3Client.setObjectAcl(bucket, objectKey, CannedAccessControlList.PublicRead)
+        }
+
+        fun getUrl(): URL = s3Client.getUrl(bucket, objectKey)
     }
+
 
     companion object {
         private const val ALBUM_COVER_WIDTH_PX = 500
