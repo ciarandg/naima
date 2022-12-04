@@ -17,10 +17,11 @@ object SystemState {
         throw VotingRoundAlreadyOpenException()
     } ?: run {
         val choices = getRoundChoices()
+        val multiAlbumCoverEmbed = MultiAlbumCoverEmbed(choices.map { it.releaseGroup }).build()
         database.suggestions.incrementTimesVotable(choices)
         val message = eventHook
             .sendMessage(VotingRound.formatChoices(choices))
-            .addEmbeds(MultiAlbumCoverEmbed(choices.map { it.releaseGroup }).build())
+            .addEmbeds(listOfNotNull(multiAlbumCoverEmbed))
             .complete()
         val round = VotingRound(
             choices,

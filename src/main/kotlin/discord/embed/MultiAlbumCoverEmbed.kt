@@ -25,17 +25,15 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
     private val localFile = File("/tmp/$localFilename")
     private val imageGenerator = ImageGenerator(releaseGroups)
 
-    fun build(): MessageEmbed {
+    fun build(): MessageEmbed? {
         imageGenerator.generate(localFile)
-        val url = if (localFile.isFile) {
+        return if (localFile.isFile) {
             val pm = PersistenceManager(localFile)
             pm.upload()
             pm.makePubliclyReadable()
             pm.getUrl()
-        } else {
-            fallbackImageUrl
-        }
-        return EmbedBuilder().setImage(url.toExternalForm()).build()
+            EmbedBuilder().setImage(pm.getUrl().toExternalForm()).build()
+        } else null
     }
 
 
