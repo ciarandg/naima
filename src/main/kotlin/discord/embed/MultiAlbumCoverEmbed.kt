@@ -78,7 +78,8 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
             .withCredentials(AWSStaticCredentialsProvider(credentials))
             .build()
 
-        client.putObject(bucket, "blah.jpg", generateImage()!!)
+        val imageFile = generateImage()!!
+        client.putObject(bucket, "multi-album-covers/${imageFile.name}", imageFile)
     }
 
     companion object {
