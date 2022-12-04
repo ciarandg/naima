@@ -2,6 +2,7 @@ package system
 
 import database
 import discord.Emojis
+import discord.embed.MultiAlbumCoverEmbed
 import net.dv8tion.jda.api.interactions.InteractionHook
 import system.data.Suggestion
 import system.data.VotingRound
@@ -16,8 +17,12 @@ object SystemState {
         throw VotingRoundAlreadyOpenException()
     } ?: run {
         val choices = getRoundChoices()
+        val multiAlbumCoverEmbed = MultiAlbumCoverEmbed(choices.map { it.releaseGroup }).build()
         database.suggestions.incrementTimesVotable(choices)
-        val message = eventHook.sendMessage(VotingRound.formatChoices(choices)).complete()
+        val message = eventHook
+            .sendMessage(VotingRound.formatChoices(choices))
+            .addEmbeds(listOfNotNull(multiAlbumCoverEmbed))
+            .complete()
         val round = VotingRound(
             choices,
             message.channel.id,
