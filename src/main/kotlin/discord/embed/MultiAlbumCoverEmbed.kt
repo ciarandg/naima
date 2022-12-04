@@ -35,7 +35,6 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
         } else null
     }
 
-
     private class ImageGenerator(private val releaseGroups: List<ReleaseGroup>) {
         private fun imageMagickCommand(writeTo: File): List<String> {
             val imageUrls = releaseGroups.map { AlbumCoverEmbed(it).imageUrl }
@@ -43,8 +42,9 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
                 listOf("magick"),
                 imageUrls,
                 listOf(
-                    "-resize", "${ALBUM_COVER_WIDTH_PX}x$ALBUM_COVER_WIDTH_PX",
-                    "+append",
+                    "-resize",
+                    "${ALBUM_COVER_WIDTH_PX}x$ALBUM_COVER_WIDTH_PX",
+                    "+append"
                 ),
                 listOf(writeTo.absolutePath)
             ).flatten()
@@ -75,9 +75,12 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
 
         private val s3Client = AmazonS3ClientBuilder
             .standard()
-            .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(
-                endpoint, ""
-            ))
+            .withEndpointConfiguration(
+                AwsClientBuilder.EndpointConfiguration(
+                    endpoint,
+                    ""
+                )
+            )
             .withCredentials(AWSStaticCredentialsProvider(s3Credentials))
             .build()
 
@@ -91,7 +94,6 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
 
         fun getUrl(): URL = s3Client.getUrl(bucket, objectKey)
     }
-
 
     companion object {
         private const val ALBUM_COVER_WIDTH_PX = 500
