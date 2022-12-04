@@ -20,6 +20,6 @@ internal class MultiAlbumCoverEmbedTest {
         println(validReleaseGroups)
         val embed = MultiAlbumCoverEmbed(validReleaseGroups).build()
         println("Resulting URL:")
-        println(embed.image!!.url!!)
+        println(embed!!.image!!.url!!)
     }
 }
