@@ -5,8 +5,10 @@ object Environment {
     val mongoHost: String = System.getenv("MONGO_HOST")
     val mongoConnString: String = "mongodb://$mongoUser:$mongoPassword@$mongoHost"
 
-    object ChannelIDs {
-        val suggestionsChannel: String = System.getenv("SUGGESTIONS_CHANNEL_ID")
-        val votingChannel: String = System.getenv("VOTING_CHANNEL_ID")
+    object S3Credentials {
+        val accessKey = System.getenv("S3_ACCESS_KEY")
+        val secretKey = System.getenv("S3_SECRET_KEY")
+        val endpoint = System.getenv("S3_ENDPOINT")
+        val bucket = System.getenv("S3_BUCKET")
     }
 }

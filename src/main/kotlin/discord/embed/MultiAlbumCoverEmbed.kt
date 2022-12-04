@@ -1,9 +1,14 @@
 package discord.embed
 
-import io.minio.BucketExistsArgs
-import io.minio.MakeBucketArgs
-import io.minio.MinioClient
-import io.minio.UploadObjectArgs
+import Environment.S3Credentials.accessKey
+import Environment.S3Credentials.bucket
+import Environment.S3Credentials.endpoint
+import Environment.S3Credentials.secretKey
+import com.amazonaws.auth.AWSStaticCredentialsProvider
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import com.amazonaws.services.s3.model.PutObjectRequest
 import musicbrainz.data.ReleaseGroup
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -34,10 +39,10 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
     }
 
     private val imageUrl: String by lazy {
-        val imageFile = generateImage()
-        imageFile?.let {
+        // val imageFile = generateImage()
+        // imageFile?.let {
             uploadToObjectStorage()
-        }
+        // }
         fallbackImageUrl
     }
     fun build(): MessageEmbed = EmbedBuilder()
@@ -63,22 +68,17 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
     }
 
     private fun uploadToObjectStorage() {
-        val bucketName = "naima"
-        val minioClient = MinioClient.builder()
-            .endpoint("https://play.min.io")
-            .credentials("Q3AM3UQ867SPQQA43P2F", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG")
+        val credentials = BasicAWSCredentials(accessKey, secretKey)
+
+        val client = AmazonS3ClientBuilder
+            .standard()
+            .withEndpointConfiguration(AwsClientBuilder.EndpointConfiguration(
+                endpoint, ""
+            ))
+            .withCredentials(AWSStaticCredentialsProvider(credentials))
             .build()
-        val found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())
-        if (!found) {
-            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build())
-        }
-        minioClient.uploadObject(
-            UploadObjectArgs.builder()
-                .bucket(bucketName)
-                .`object`(localFilename)
-                .filename(localPath)
-                .build()
-        )
+
+        client.putObject(bucket, "blah.jpg", generateImage()!!)
     }
 
     companion object {

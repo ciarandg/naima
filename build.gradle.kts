@@ -26,7 +26,7 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("com.vdurmont:emoji-java:5.1.1")
     implementation("org.litote.kmongo:kmongo:4.6.1")
-    implementation("io.minio:minio:8.4.6")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.357")
     testImplementation(kotlin("test"))
 }
 
