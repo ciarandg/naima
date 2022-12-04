@@ -16,7 +16,6 @@ import java.io.File
 import java.net.URL
 
 class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
-    private val fallbackImageUrl = URL("https://coverartarchive.org/release-group/a5572828-f7f2-405d-8853-a2019b019e07/front")
     private val localFilename = run {
         val ids = releaseGroups.map { it.id }
         val combined = ids.reduce { acc, id -> "${acc}_$id" }
