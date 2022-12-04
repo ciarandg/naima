@@ -8,7 +8,6 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import com.amazonaws.services.s3.model.PutObjectRequest
 import musicbrainz.data.ReleaseGroup
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -23,7 +22,7 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
         "$combined.jpg"
     }
 
-    private val localPath = "/tmp/$localFilename"
+    private val localFile = File("/tmp/$localFilename")
 
     private val imageMagickCommand = run {
         val imageUrls = releaseGroups.map { AlbumCoverEmbed(it).imageUrl }
@@ -34,22 +33,20 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
                 "-resize", "${ALBUM_COVER_WIDTH_PX}x$ALBUM_COVER_WIDTH_PX",
                 "+append",
             ),
-            listOf(localPath)
+            listOf(localFile.absolutePath)
         ).flatten()
     }
 
     private val imageUrl: String by lazy {
-        // val imageFile = generateImage()
-        // imageFile?.let {
-            uploadToObjectStorage()
-        // }
+        writeLocalFile()
+        uploadToObjectStorage()
         fallbackImageUrl
     }
     fun build(): MessageEmbed = EmbedBuilder()
         .setImage(imageUrl)
         .build()
 
-    private fun generateImage(): File? {
+    private fun writeLocalFile() {
         println("About to run the following command:")
         println(imageMagickCommand)
 
@@ -59,12 +56,10 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
 
         process.waitFor()
         if (process.exitValue() == 0) {
-            println("Successfully wrote a multi album cover image to $localPath")
+            println("Successfully wrote a multi album cover image to $localFile")
         } else {
-            println("Failed to write a multi album cover image to $localPath")
+            println("Failed to write a multi album cover image to $localFile")
         }
-
-        return File(localPath).let { if (it.isFile) it else null }
     }
 
     private fun uploadToObjectStorage() {
@@ -78,8 +73,8 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
             .withCredentials(AWSStaticCredentialsProvider(credentials))
             .build()
 
-        val imageFile = generateImage()!!
-        client.putObject(bucket, "multi-album-covers/${imageFile.name}", imageFile)
+        writeLocalFile()
+        client.putObject(bucket, "multi-album-covers/${localFile.name}", localFile)
     }
 
     companion object {
