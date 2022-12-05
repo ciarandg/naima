@@ -3,7 +3,6 @@ services:
   naima:
     build: ./.
     user: gradle
-    command: naima
     env_file: .env
   # See https://www.mongodb.com/compatibility/docker
   mongodb:
