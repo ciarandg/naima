@@ -36,6 +36,10 @@ spotless {
     }
 }
 
+jib {
+    from.image = "dpokidov/imagemagick:latest-buster"
+}
+
 tasks.test {
     useJUnitPlatform()
     onlyIf { project.hasProperty("runTests") }
