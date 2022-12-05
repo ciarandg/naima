@@ -37,7 +37,7 @@ spotless {
 }
 
 jib {
-    from.image = "dpokidov/imagemagick:latest-buster"
+    from.image = "dpokidov/imagemagick:7.1.0-53-buster"
 }
 
 tasks.test {
