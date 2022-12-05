@@ -1,9 +1,9 @@
 package event.handler
 
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import database
 import kotlinx.coroutines.runBlocking
 import musicbrainz.MusicBrainz
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
 class UnsuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventHandler(event) {
     override fun handle() {
