@@ -19,6 +19,10 @@ class SuggestionsCollection(
         collection.insertOne(suggestion)
     }
 
+    fun remove(suggestion: Suggestion) {
+        collection.deleteOne(Suggestion::releaseGroup / ReleaseGroup::id eq suggestion.releaseGroup.id)
+    }
+
     fun getUnchosenRanked(): List<Suggestion> = collection.aggregate<Suggestion>(
         match(Suggestion::hasBeenChosen eq false)
     ).shuffled().sortedBy { it.timesVotable }
