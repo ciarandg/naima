@@ -39,7 +39,7 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
         private fun imageMagickCommand(writeTo: File): List<String> {
             val imageUrls = releaseGroups.map { AlbumCoverEmbed(it).imageUrl }
             return listOf(
-                listOf("magick"),
+                listOf("convert"),
                 imageUrls,
                 listOf(
                     "-resize",
