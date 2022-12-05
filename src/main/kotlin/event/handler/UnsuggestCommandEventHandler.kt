@@ -11,16 +11,17 @@ class UnsuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventH
         val artist = event.getOption("artist")!!.asString // TODO proper error handling
         val album = event.getOption("album")!!.asString // TODO proper error handling
         val releaseGroup = runBlocking { MusicBrainz.searchForReleaseGroup(album, artist) }
-        releaseGroup?.let {
+        val message = releaseGroup?.let {
             val suggestion = database.suggestions.getSuggestion(releaseGroup)
             suggestion?.let {
-                database.suggestions.remove(suggestion)
-                event.hook.sendMessage("Successfully removed ${suggestion.releaseGroup.prettyName} from database").queue()
-            } ?: run {
-                event.hook.sendMessage("There is no prior suggestion in the database for this release group").queue()
-            }
-        } ?: run {
-            event.hook.sendMessage("Couldn't find a match for the suggested album in the Musicbrainz database. Did you make a typo?").queue()
-        }
+                if (!suggestion.hasBeenChosen) {
+                    database.suggestions.remove(suggestion)
+                    "Successfully removed ${suggestion.releaseGroup.prettyName} from database"
+                } else {
+                    "${suggestion.releaseGroup.prettyName} has already been selected in a vote, and cannot be unsuggested"
+                }
+            } ?: "There is no prior suggestion in the database for this release group"
+        } ?: "Couldn't find a match for the suggested album in the Musicbrainz database. Did you make a typo?"
+        event.hook.sendMessage(message).queue()
     }
 }
