@@ -31,7 +31,7 @@ class NaimaEventListener : ListenerAdapter() {
             NaimaCommands.openVoteCommand.name -> OpenVoteCommandEventHandler(event).handle()
             NaimaCommands.closeVoteCommand.name -> CloseVoteCommandEventHandler(event).handle()
             NaimaCommands.statsCommand.name -> StatsCommandEventHandler(event).handle()
-            else -> throw IllegalStateException("User a command that shouldn't exist: /${event.name}")
+            else -> throw IllegalStateException("Used a command that shouldn't exist: /${event.name}")
         }
     }
 }
