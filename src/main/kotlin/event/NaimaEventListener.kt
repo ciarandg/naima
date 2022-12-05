@@ -16,6 +16,7 @@ class NaimaEventListener : ListenerAdapter() {
         println("Discord API is ready!")
         jda.updateCommands().addCommands(
             NaimaCommands.suggestCommand,
+            NaimaCommands.unsuggestCommand,
             NaimaCommands.openVoteCommand,
             NaimaCommands.closeVoteCommand,
             NaimaCommands.statsCommand
