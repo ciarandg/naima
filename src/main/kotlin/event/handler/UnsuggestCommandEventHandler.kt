@@ -15,7 +15,7 @@ class UnsuggestCommandEventHandler(event: SlashCommandInteractionEvent) : EventH
             val suggestion = database.suggestions.getSuggestion(releaseGroup)
             suggestion?.let {
                 database.suggestions.remove(suggestion)
-                event.hook.sendMessage("Successfully removed ${suggestion.releaseGroup.prettyName} from database")
+                event.hook.sendMessage("Successfully removed ${suggestion.releaseGroup.prettyName} from database").queue()
             } ?: run {
                 event.hook.sendMessage("There is no prior suggestion in the database for this release group").queue()
             }
