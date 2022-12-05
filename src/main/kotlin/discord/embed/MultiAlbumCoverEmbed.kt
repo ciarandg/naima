@@ -85,14 +85,19 @@ class MultiAlbumCoverEmbed(releaseGroups: List<ReleaseGroup>) {
             .build()
 
         fun upload() {
+            println("Uploading ${file.absolutePath} to object storage")
             s3Client.putObject(bucket, objectKey, file)
         }
 
         fun makePubliclyReadable() {
+            println("Making $objectKey publicly readable")
             s3Client.setObjectAcl(bucket, objectKey, CannedAccessControlList.PublicRead)
         }
 
-        fun getUrl(): URL = s3Client.getUrl(bucket, objectKey)
+        fun getUrl(): URL {
+            println("Fetching url for $objectKey")
+            return s3Client.getUrl(bucket, objectKey)
+        }
     }
 
     companion object {
