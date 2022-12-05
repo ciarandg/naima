@@ -38,6 +38,7 @@ spotless {
 
 tasks.test {
     useJUnitPlatform()
+    onlyIf { project.hasProperty("runTests") }
 }
 
 tasks.withType<KotlinCompile> {
