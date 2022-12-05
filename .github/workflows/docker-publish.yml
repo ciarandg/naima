@@ -77,7 +77,7 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: "${{ env.IMAGE_NAME }}:${{ github.ref_name }}"
+          tags: "${{ env.IMAGE_NAME }}:${{ steps.date.outputs.date }}"
           labels: ${{ steps.meta.outputs.labels }}
 
       # Sign the resulting Docker image digest except on PRs.
@@ -91,4 +91,4 @@ jobs:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: echo "${{ env.IMAGE_NAME }}:${{ github.ref_name }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+        run: echo "${{ env.IMAGE_NAME }}:${{ steps.date.outputs.date }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
